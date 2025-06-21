@@ -58,7 +58,7 @@ jobs:
 
       - name: Deploy via SSH through Cloudflare Tunnel
         run: |
-          ssh cf-server << 'EOF'
+          ssh -tt cf-server << 'EOF'
             cd /home/libxyz/Documents/My-Personal-Project/solutekno/solutekno
             git pull origin main
             npm install --production

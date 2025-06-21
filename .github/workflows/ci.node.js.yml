@@ -27,16 +27,39 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
 
-      - name: Deploy To Server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
+      - name: Install cloudflared
+        run: |
+          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
+          chmod +x cloudflared
+          sudo mv cloudflared /usr/local/bin/cloudflared
+
+      - name: Set up SSH config for Cloudflare Access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          echo "Host cf-server
+            HostName ${{ secrets.SSH_HOST }}
+            User ${{ secrets.SSH_USERNAME }}
+            ProxyCommand cloudflared access ssh --hostname %h" >> ~/.ssh/config
+
+      - name: Authenticate with Cloudflare Access
+        run: |
+          mkdir -p ~/.cloudflared
+          cat <<EOF > ~/.cloudflared/credentials.json
+          {
+            "client_id": "${{ secrets.CF_ACCESS_CLIENT_ID }}",
+            "client_secret": "${{ secrets.CF_ACCESS_CLIENT_SECRET }}"
+          }
+          EOF
+
+      - name: Run SSH Commands via Cloudflare
+        run: |
+          ssh cf-server << 'EOF'
             cd /home/libxyz/Documents/My-Personal-Project/solutekno/solutekno
             git pull origin main
             npm install --production
             npm run build
             pm2 restart solutekno-cp
+          EOF

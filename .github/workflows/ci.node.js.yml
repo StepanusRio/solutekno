@@ -16,7 +16,7 @@ jobs:
       name: production
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
@@ -54,9 +54,14 @@ jobs:
           }
           EOF
 
+      - name: Add SSH Host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: Run SSH Commands via Cloudflare
         run: |
-          ssh cf-server << 'EOF'
+          ssh -tt cf-server << 'EOF'
             cd /home/libxyz/Documents/My-Personal-Project/solutekno/solutekno
             git pull origin main
             npm install --production

@@ -1,0 +1,4 @@
+# Ignore generated Prisma files
+./app/generated/prisma/*
+# Ignore Node.js modules
+/node_modules/*

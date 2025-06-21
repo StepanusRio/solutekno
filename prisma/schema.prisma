@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BlogPost {
+  id       Int      @id @default(autoincrement())
+  title    String
+  excerpt  String
+  image    String
+  date     DateTime
+  readTime String
+}
+
+model Portfolio {
+  id       Int      @id @default(autoincrement())
+  title    String
+  category String
+  image    String
+  tech     String[]
+}
+
+model Testimonial {
+  id      Int    @id @default(autoincrement())
+  name    String
+  company String
+  text    String
+  avatar  String
+  rating  Float
+}

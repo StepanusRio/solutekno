@@ -125,7 +125,7 @@ export default function Home() {
               <div className="text-2xl font-bold mb-4">Solutekno</div>
               <p className="text-gray-400 mb-4">
                 Solusi digital terpercaya untuk mengembangkan bisnis Anda dengan
-                teknologi modern dan inovatif. (TEST)
+                teknologi modern dan inovatif.
               </p>
             </div>
 

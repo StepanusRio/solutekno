@@ -59,10 +59,14 @@ jobs:
       - name: Deploy via SSH through Cloudflare Tunnel
         run: |
           ssh cf-server << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 22 || nvm install 22
+
             cd /home/libxyz/Documents/My-Personal-Project/solutekno/solutekno
             git pull origin main
-            /home/libxyz/.nvm/versions/node/v22.14.0/bin/npm ci
-            /home/libxyz/.nvm/versions/node/v22.14.0/bin/npm run build
-            /home/libxyz/.nvm/versions/node/v22.14.0/bin/pm2 restart solutekno-cp
+            npm install --production
+            npm run build
+            pm2 restart solutekno-cp --silent
             exit 0
           EOF

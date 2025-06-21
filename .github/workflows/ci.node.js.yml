@@ -61,8 +61,8 @@ jobs:
           ssh cf-server << 'EOF'
             cd /home/libxyz/Documents/My-Personal-Project/solutekno/solutekno
             git pull origin main
-            npm ci
-            npm run build
-            pm2 restart solutekno-cp
+            /home/libxyz/.nvm/versions/node/v22.14.0/bin/npm ci
+            /home/libxyz/.nvm/versions/node/v22.14.0/bin/npm run build
+            /home/libxyz/.nvm/versions/node/v22.14.0/bin/pm2 restart solutekno-cp
             exit 0
           EOF
